@@ -5,10 +5,11 @@ const posts = [
 ];
 
 const listPosts = () => {
+    console.log("\n************************** POSTS ***************************");
     posts.map((post) => {
         console.log(post.user);
         console.log(post.content);
-        console.log("----------------------------------------------------------");
+        console.log("------------------------------------------------------------");
     });
 };
 
@@ -30,6 +31,7 @@ listPosts();
         console.log(err);
     }
 })();
+
 
 
 
