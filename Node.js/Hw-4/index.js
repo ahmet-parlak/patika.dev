@@ -1,54 +1,73 @@
 const fs = require('node:fs');
 
-const data = { "name": "Employee 1 Name", "salary": 2000 };
+const employee = { "name": "Employee 1 Name", "salary": 2000 };
 
-/* Create */
-create(data);
+(async () => {
+    /* Create */
+    console.log(await create(employee));
 
-/* Read */
-read();
+    /* Read */
+    console.log(await read());
 
-/* Update */
-data.salary = 3000;
-update(data);
+    /* Update */
+    employee.salary = 3000;
+    console.log(await update(employee));
 
-/* Delete */
-deleteFile();
+    /* Delete */
+    console.log(await deleteFile());
 
+})()
 
 
 
 /* CREATE */
 function create(data) {
-    fs.writeFileSync('employees.json', JSON.stringify(data), 'utf8')
-    console.log('Dosya oluşturuldu.');
+    return new Promise((resolve, reject) => {
+        fs.writeFile('employees.json', JSON.stringify(data), 'utf8', (err, data) => {
+            if (err) reject("Dosya oluşturulamadı");
+
+            resolve("Dosya oluşturuldu");
+        })
+
+    });
+
 }
 
 /* READ */
 function read() {
-    const data = fs.readFileSync('employees.json', 'utf8');
-    console.log(data);
+    return new Promise((resolve, reject) => {
+        fs.readFile('employees.json', 'utf8', (err, data) => {
+            if (err) reject("Dosya okunamadı");
+            resolve(data);
+        })
+
+    });
 }
 
+
 /* UPDATE */
-function update(data) {
-    fs.writeFileSync('employees.json', JSON.stringify(data), 'utf8')
-    console.log('Dosya güncellendi.');
-    read();
+async function update(data) {
+    return new Promise((resolve, reject) => {
+        fs.writeFile('employees.json', JSON.stringify(data), 'utf8', (err) => {
+            if (err) reject("Dosya güncellenemedi");
+
+            resolve(`Dosya Güncellendi`)
+        })
+    }).then(async (data) => {
+        return `${data}: ${await read()}`
+    }).catch((err) => {
+        return err;
+    });
 }
 
 /* DELETE */
 function deleteFile() {
-    fs.unlinkSync('employees.json');
-    console.log('Dosya silindi');
+    return new Promise((resolve, reject) => {
+        fs.unlink('employees.json', (err) => {
+            if (err) reject("Dosya silinemedi");
+            resolve("Dosya silindi");
+        })
+
+    });
 }
-
-
-
-
-
-
-
-
-
 
